@@ -131,7 +131,7 @@ async function albumMessage(bot, jid, array, quoted) {
       newsletterName: `WhatsApp`,
       contentType: 1,
       timestamp: new Date().toISOString(),
-      senderName: "Raganork",
+      senderName: "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모",
       content: "Album Message",
       priority: "high",
       status: "sent",

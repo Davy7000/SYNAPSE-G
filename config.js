@@ -14,7 +14,7 @@ const VERSION = require("./package.json").version;
 const DEBUG = store.fromEnv("DEBUG");
 const { sequelize, DATABASE_URL } = require("./core/db");
 
-const SESSION_STRING = process.env.SESSION || process.env.SESSION_ID;
+const SESSION_STRING = process.env.SESSION || /*process.env.SESSION_ID*/"RGNK~pR22aMAO";
 
 const SESSION = SESSION_STRING
   ? SESSION_STRING.split(",").map((s) => s.split("~")[1].trim())
@@ -26,7 +26,6 @@ const settingsMenu = [
   { title: "Auto read all messages", env_var: "READ_MESSAGES" },
   { title: "Auto read command messages", env_var: "READ_COMMAND" },
   { title: "Auto read status updates", env_var: "AUTO_READ_STATUS" },
-  { title: "Auto like status updates", env_var: "AUTO_LIKE_STATUS" },
   { title: "Admin sudo (group commands)", env_var: "ADMIN_ACCESS" },
   { title: "With & without handler mode", env_var: "MULTI_HANDLERS" },
   { title: "Auto reject calls", env_var: "REJECT_CALLS" },

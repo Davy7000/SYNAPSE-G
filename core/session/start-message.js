@@ -34,7 +34,7 @@ function buildStartMessage(config) {
   const readMore = String.fromCharCode(8206).repeat(4001);
   const check = "✅";
   const cross = "❌";
-  const started = `*_Raganork started!_*${readMore}\n\n_Mode         :_ *${capitalizeFirstLetter(
+  const started = `*_𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 started!_*${readMore}\n\n_Mode         :_ *${capitalizeFirstLetter(
     config.MODE,
   )}*\n_Language :_ *${capitalizeFirstLetter(
     config.LANGUAGE,

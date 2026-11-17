@@ -7,7 +7,7 @@ const { logger, baileysLogger } = config;
 // old Chrome identity. read inside the session, so a .setvar value counts
 const CHROME_VALUES = new Set(["chrome", "web", "browser"]);
 const isAndroidBrowser = () => !CHROME_VALUES.has(String(config.WA_BROWSER || "").trim().toLowerCase());
-const browserFor = () => (isAndroidBrowser() ? ["13", "Android", ""] : ["Raganork", "Chrome", "1.0.0"]);
+const browserFor = () => (isAndroidBrowser() ? ["13", "Android", ""] : ["𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모", "Chrome", "1.0.0"]);
 
 // what baileys gets when a session opens its socket. the cache lookups read the bot's
 // caches at call time

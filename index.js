@@ -13,8 +13,8 @@ const { boot } = require("./core/app");
 
 if (require.main === module) {
   boot().catch((error) => {
-    console.error(`Fatal error in main execution: ${error.message}`, error);
-    logger.fatal({ err: error }, `Fatal error in main execution`);
+    console.error(`FErreur lors de l'execution: ${error.message}`, error);
+    logger.fatal({ err: error }, `Erreur`);
     process.exit(1);
   });
 }

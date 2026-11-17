@@ -48,11 +48,11 @@ const unlinkAll = (files) =>
   Promise.all(files.map((f) => fs.promises.unlink(f).catch(() => {})));
 
 const stickerExif = (message) => ({
-  author: config.STICKER_DATA.split(";")[1] || "",
+  author: config.STICKER_DATA.split(";")[1] || "Loid Forger",
   packname: message.senderName,
   categories: config.STICKER_DATA.split(";")[2] || "😂",
-  android: "https://github.com/souravkl11/Raganork-md/",
-  ios: "https://github.com/souravkl11/Raganork-md/",
+  android: "https://github.com/Davy7000/SYNAPSE-G/",
+  ios: "https://github.com/Davy7000/SYNAPSE-G/",
 });
 
 // sticker bytes with the pack info written in; the intermediate files are removed

@@ -10,6 +10,9 @@ Module({
 }, async (message, match) => {
     // Liste enrichie d'emojis pour l'animation
     let emo = [
+     // Ciel et Étoiles
+    '☁️', '🌤️', '⛅', '🌥️', '🌦️', '🌧️', '⛈️', '🌩️', '🌨️', '❄️',   
+
     //  Magie, Fête, Câlins et Cadeaux
     '✨', '🔥', '💫', '🌟', '⭐', '🎈', '🎉', '🎊', '🎁', '🎀', 
     '💌', '💎', '👑', '💋', '🫂', '🕊️', '🪄', '🥂', '🍾',
@@ -46,7 +49,7 @@ Module({
         if (i === emo.length - 1) {
             messageAnime += `\n\n` +
                 
-               `> *_Je t'aime trés fort_*\n`;
+               `> *_Je t'aime trés fort🤍_*\n`;
         }
 
         // Modification en temps réel

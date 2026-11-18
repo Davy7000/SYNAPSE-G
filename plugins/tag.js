@@ -58,20 +58,20 @@ Module({
 
     if (isTagged) {
         // --- LIEN DE TA VIDÉO ICI ---
-        const videoUrl = 'https://ossynapse.netlify.app/video/video.mp4'; 
+        const videoUrl = 'https://eliteprotech-url.zone.id/17950297007977ed8lx.mp4'; 
 
         try {
             await message.sendMessage(
                 { url: videoUrl },
                 'video',
                 { 
-                    caption: `_Je suis là ! Que puis-je faire pour vous ?_`,
+                    caption: `_Mon nom engendre la peur ma présence inflige le respect tels est ma destinée! Que puis-je faire pour vous ?_`,
                     mentions: [message.sender],
                     quoted: message.data 
                 }
             );
         } catch (error) {
-            await message.sendReply('_Je suis là ! 👋_');
+            await message.sendReply('_Je suis là !_');
         }
     }
 });

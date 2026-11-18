@@ -27,7 +27,7 @@
 const legacyBool = (raw) => raw === "true" || raw === "on";
 
 const entries = {
-  ALIVE: { type: "string", default: "_I am alive! (use .setalive help for custom alive msg)_" },
+  ALIVE: { type: "string", default: "_Synapse 2.0 est la pour vous servir_" },
   BLOCK_CHAT: { type: "string", default: "" },
   // bool, but the default has always been the empty string
   PM_ANTISPAM: { type: "bool", default: "" },
@@ -74,7 +74,7 @@ const entries = {
     env: (raw) => (raw === undefined || raw === "private" ? "default" : raw),
   },
   TAKE_KEY: { type: "string", default: "" },
-  CMD_REACTION: { type: "string", default: false, env: legacyBool },
+  CMD_REACTION: { type: "string", default: true, env: legacyBool },
   MODE: { type: "string", default: "private", normalize: (v) => v.trim().toLowerCase() },
   WARN: { type: "string", default: "4" },
   ANTILINK_WARN: { type: "string", default: "" },

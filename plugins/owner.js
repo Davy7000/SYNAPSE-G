@@ -10,12 +10,12 @@ const isPrivateBot = config.MODE !== 'public';
 ===================================================================================*/
 
 const OWNER_DETAILS = {
-    name: 'T W I L I G H T 모',
-    title: 'Créateur Officielle',
+    name: '𝑻𝒘𝒊𝒍𝒊𝒈𝒉𝒕_𝑲𝒊𝒏𝒈☯❥',
+    title: 'Administrateur',
     number: '242050336960',
-    body: 'Focus . Build . Achieve',
-    image: "https://files.catbox.moe/nlnd2v.jpg",
-    thumbnailUrl: 'https://gist.github.com/Davy7000'
+    body: 'oss compagny',
+    image: "https://i.ibb.co/PZdr7GK6/temp.jpg",
+    thumbnailUrl: 'https://gist.github.com/'
 };
 
 /*===================================================================================
@@ -27,7 +27,6 @@ const OWNER_DETAILS = {
 Module({
     pattern: 'owner',
     fromMe: isPrivateBot,
-    use: 'oss',
     desc: 'Bot Owner',
     type: 'user'
 }, async (message, match) => {

@@ -1,155 +1,57 @@
 'use strict';
 
 const { Module } = require('../main');
-const config = require('../config');
-const QRCode = require('qrcode');
-const jsQR = require('jsqr');
-const { Jimp } = require('jimp');
-
-const isPrivateMode = config.MODE === 'private';
-const handlerPrefix = config.HANDLERS !== 'false' ? config.HANDLERS.split('')[0] : '.';
-
-async function decodeQrBuffer(imageBuffer) {
-  const image = await Jimp.read(imageBuffer);
-  const { data, width, height } = image.bitmap;
-  const result = jsQR(new Uint8ClampedArray(data), width, height, {
-    inversionAttempts: 'attemptBoth',
-  });
-  return result ? result.data : null;
-}
+const fs = require('fs');
+const path = require('path');
 
 Module(
   {
-    pattern: 'qr ?(.*)',
-    fromMe: isPrivateMode,
-    use: 'utility',
-    usage: 'qr <texte ou lien> (ou répondre à un message)',
-    desc: 'Génère un QR code scannable à partir d’un texte, d’un lien ou d’un message cité.',
+    pattern: 'kill ?(.*)',
+    fromMe: true,
+    use: 'owner',
+    desc: 'Déconnecte le bot des appareils connectés WhatsApp et supprime la session locale.',
   },
   async (message, match) => {
     try {
-      const textInput =
-        (match && match[1] && match[1].trim()) ||
-        (message.reply_message && message.reply_message.text && message.reply_message.text.trim()) ||
-        '';
+      const confirm = (match && match[1] && match[1].trim().toLowerCase()) === 'confirm';
 
-      if (!textInput) {
+      if (!confirm) {
         return await message.sendReply(
-          `╭───〖 *G É N É R A T E U R  Q R* 〗───\n` +
-          `│\n` +
-          `│ ❌ *Aucun texte ou lien détecté.*\n` +
-          `│\n` +
-          `│ 💡 *Exemples :*\n` +
-          `│ • \`${handlerPrefix}qr https://github.com\`\n` +
-          `│ • \`${handlerPrefix}qr SYNAPSE-X v2\`\n` +
-          `│ • Réponds à une image QR avec \`${handlerPrefix}readqr\`\n` +
-          `│\n` +
-          `╰─────────────────────────────`
+          `⚠️ *Attention :* cette commande va déconnecter *SYNAPSE-X* de *Appareils connectés* sur WhatsApp et effacer la session locale.\n\n` +
+          `Tape *${message.prefix || '.'}kill confirm* pour valider.`
         );
       }
 
-      if (textInput.length > 1200) {
-        return await message.sendReply(
-          '_Le contenu est trop long pour générer un QR code lisible (max 1200 caractères)._'
-        );
+      await message.react('💀');
+      await message.sendReply('🔌 *Déconnexion en cours de WhatsApp (Appareils connectés)...*');
+
+      const sock = message.client;
+      const sessionDir = path.join(__dirname, '../session');
+
+      // 1. Déconnexion propre côté WhatsApp
+      if (sock && typeof sock.logout === 'function') {
+        try {
+          await sock.logout();
+        } catch (logoutErr) {
+          console.error('Erreur sock.logout():', logoutErr);
+        }
       }
 
-      await message.react('⏳');
+      // 2. Suppression sécurisée des fichiers de la session locale
+      if (fs.existsSync(sessionDir)) {
+        for (const file of fs.readdirSync(sessionDir)) {
+          fs.rmSync(path.join(sessionDir, file), { recursive: true, force: true });
+        }
+      }
 
-      const qrBuffer = await QRCode.toBuffer(textInput, {
-        type: 'png',
-        width: 600,
-        margin: 2,
-        errorCorrectionLevel: 'M',
-        color: {
-          dark: '#090D16',
-          light: '#FFFFFF',
-        },
-      });
-
-      const caption =
-        `╭───〖 *S Y N A P S E - X  Q R* 〗───\n` +
-        `│\n` +
-        `│ ✅ *QR Code généré avec succès*\n` +
-        `│ 📝 *Contenu :* \`${textInput.length > 140 ? textInput.slice(0, 140) + '...' : textInput}\`\n` +
-        `│\n` +
-        `╰─────────────────────────────`;
-
-      await message.client.sendMessage(
-        message.jid,
-        {
-          image: qrBuffer,
-          mimetype: 'image/png',
-          caption,
-        },
-        { quoted: message.data }
-      );
-
-      await message.react('✅');
+      // 3. Arrêt du processus (Pterodactyl / gestionnaire prendra le relais)
+      setTimeout(() => {
+        process.exit(0);
+      }, 1500);
     } catch (err) {
-      console.error('Erreur Plugin QR:', err);
+      console.error('Erreur Plugin Kill:', err);
       await message.react('❌');
-      await message.sendReply(`_Erreur lors de la génération du QR code :_ \`${err.message || err}\``);
-    }
-  }
-);
-
-Module(
-  {
-    pattern: '(?:readqr|decodeqr) ?(.*)',
-    fromMe: isPrivateMode,
-    use: 'utility',
-    usage: 'readqr (en répondant à une image QR)',
-    desc: 'Lit et décode le contenu d’une image QR code en réponse.',
-  },
-  async (message) => {
-    try {
-      const quoted = message.reply_message;
-      const isQuotedImage =
-        quoted &&
-        (quoted.image ||
-          quoted.message?.imageMessage ||
-          quoted.message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage);
-
-      if (!quoted || !isQuotedImage) {
-        return await message.sendReply(
-          `╭───〖 *L E C T E U R  Q R* 〗───\n` +
-          `│\n` +
-          `│ ❌ *Réponds à une image contenant un QR code.*\n` +
-          `│\n` +
-          `│ 💡 *Usage :* \`${handlerPrefix}readqr\` ou \`${handlerPrefix}decodeqr\`\n` +
-          `│\n` +
-          `╰─────────────────────────`
-        );
-      }
-
-      await message.react('⏳');
-
-      const downloaded = await quoted.download();
-      const buffer = Buffer.isBuffer(downloaded) ? downloaded : Buffer.from(downloaded);
-      const decodedData = await decodeQrBuffer(buffer);
-
-      if (!decodedData) {
-        await message.react('❌');
-        return await message.sendReply(
-          '_Aucun QR code lisible détecté dans cette image. Essaie avec une image plus nette ou bien cadrée._'
-        );
-      }
-
-      const decodedCard =
-        `╭───〖 *Q R  D É C O D É* 〗───\n` +
-        `│\n` +
-        `│ ✅ *Contenu extrait :*\n` +
-        `│ \`${decodedData}\`\n` +
-        `│\n` +
-        `╰─────────────────────────`;
-
-      await message.sendReply(decodedCard);
-      await message.react('✅');
-    } catch (err) {
-      console.error('Erreur Lecture QR:', err);
-      await message.react('❌');
-      await message.sendReply(`_Erreur lors de la lecture du QR code :_ \`${err.message || err}\``);
+      await message.sendReply(`_Erreur lors de la déconnexion :_ \`${err.message || err}\``);
     }
   }
 );
